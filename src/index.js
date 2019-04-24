@@ -99,8 +99,9 @@ class Marquee extends Component {
 
   _startAnimation() {
     clearTimeout(this._marqueeTimer);
+    const speed = (1 / this.props.speed) * 1000;
     const isLeading = this.state.animatedWidth === 0;
-    const timeout = isLeading ? this.props.leading : this.props.speed;
+    const timeout = isLeading ? this.props.leading : speed;
 
     const animate = () => {
       const { overflowWidth } = this.state;
@@ -121,14 +122,14 @@ class Marquee extends Component {
             animatedWidth
           });
 
-          this._marqueeTimer = setTimeout(animate, this.props.speed);
+          this._marqueeTimer = setTimeout(animate, speed);
         }, this.props.trailing);
       } else {
         this.setState({
           animatedWidth
         });
 
-        this._marqueeTimer = setTimeout(animate, this.props.speed);
+        this._marqueeTimer = setTimeout(animate, speed);
       }
     };
 
