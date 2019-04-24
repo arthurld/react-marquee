@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
-const FPS = 20;
-const STEP = 1;
-const TIMEOUT = 1 / FPS * 1000;
-
 class Marquee extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       animatedWidth: 0,
       overflowWidth: 0
-    }
+    };
 
-    this.handleMouseEnter = this.handleMouseEnter.bind(this)
-    this.handleMouseLeave = this.handleMouseLeave.bind(this)
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
   componentDidMount() {
@@ -39,20 +35,18 @@ class Marquee extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-          if(this.props.text.length != nextProps.text.length)
-          {
-              clearTimeout(this._marqueeTimer);
-              this.setState({
-                animatedWidth: 0
-              });
-          }
+    if (this.props.text.length != nextProps.text.length) {
+      clearTimeout(this._marqueeTimer);
+      this.setState({
+        animatedWidth: 0
+      });
+    }
   }
 
   handleMouseEnter() {
     if (this.props.hoverToStop) {
       clearTimeout(this._marqueeTimer);
-    }
-    else if (this.state.overflowWidth > 0){
+    } else if (this.state.overflowWidth > 0) {
       this._startAnimation();
     }
   }
@@ -60,8 +54,7 @@ class Marquee extends Component {
   handleMouseLeave() {
     if (this.props.hoverToStop && this.state.overflowWidth > 0) {
       this._startAnimation();
-    }
-    else {
+    } else {
       clearTimeout(this._marqueeTimer);
       this.setState({
         animatedWidth: 0
@@ -71,24 +64,33 @@ class Marquee extends Component {
 
   render() {
     const style = {
-      'position': 'relative',
-      'right': this.state.animatedWidth,
-      'whiteSpace': 'nowrap'
+      position: 'relative',
+      transform: `translateX(-${this.state.animatedWidth}px)`,
+      whiteSpace: 'nowrap'
     };
 
     if (this.state.overflowWidth < 0) {
       return (
-        <div className={`ui-marquee ${this.props.className}`} style={{overflow: 'hidden'}}>
-          <span ref="text" style={style} title={this.props.text}>{this.props.text}</span>
+        <div
+          className={`ui-marquee ${this.props.className}`}
+          style={{ overflow: 'hidden' }}
+        >
+          <span ref="text" style={style} title={this.props.text}>
+            {this.props.text}
+          </span>
         </div>
       );
-    }
-    else {
+    } else {
       return (
-        <div className={`ui-marquee ${this.props.className}`} style={{overflow: 'hidden'}}
-             onMouseEnter={this.handleMouseEnter}
-             onMouseLeave={this.handleMouseLeave}>
-          <span ref="text" style={style} title={this.props.text}>{this.props.text}</span>
+        <div
+          className={`ui-marquee ${this.props.className}`}
+          style={{ overflow: 'hidden' }}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        >
+          <span ref="text" style={style} title={this.props.text}>
+            {this.props.text}
+          </span>
         </div>
       );
     }
@@ -97,18 +99,17 @@ class Marquee extends Component {
   _startAnimation() {
     clearTimeout(this._marqueeTimer);
     const isLeading = this.state.animatedWidth === 0;
-    const timeout = isLeading ? this.props.leading : TIMEOUT;
+    const timeout = isLeading ? this.props.leading : this.props.speed;
 
     const animate = () => {
-      const {overflowWidth} = this.state;
-      let animatedWidth = this.state.animatedWidth + STEP;
+      const { overflowWidth } = this.state;
+      let animatedWidth = this.state.animatedWidth + 1;
       const isRoundOver = animatedWidth > overflowWidth;
 
       if (isRoundOver) {
         if (this.props.loop) {
           animatedWidth = 0;
-        }
-        else {
+        } else {
           return;
         }
       }
@@ -119,15 +120,14 @@ class Marquee extends Component {
             animatedWidth
           });
 
-          this._marqueeTimer = setTimeout(animate, TIMEOUT);
+          this._marqueeTimer = setTimeout(animate, this.props.speed);
         }, this.props.trailing);
-      }
-      else {
+      } else {
         this.setState({
           animatedWidth
         });
 
-        this._marqueeTimer = setTimeout(animate, TIMEOUT);
+        this._marqueeTimer = setTimeout(animate, this.props.speed);
       }
     };
 
@@ -157,8 +157,9 @@ Marquee.defaultProps = {
   hoverToStop: false,
   loop: false,
   leading: 0,
-  trailing: 0
-}
+  trailing: 0,
+  speed: 50
+};
 
 Marquee.propTypes = {
   text: PropTypes.string,
@@ -166,7 +167,8 @@ Marquee.propTypes = {
   loop: PropTypes.bool,
   leading: PropTypes.number,
   trailing: PropTypes.number,
-  className: PropTypes.string
-}
+  className: PropTypes.string,
+  speed: PropTypes.number
+};
 
 module.exports = Marquee;
