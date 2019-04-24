@@ -65,6 +65,7 @@ class Marquee extends Component {
   render() {
     const style = {
       position: 'relative',
+      display: 'inline-block',
       transform: `translateX(-${this.state.animatedWidth}px)`,
       whiteSpace: 'nowrap'
     };
