@@ -51,6 +51,12 @@ Type: Number Default: `0`
 
 The trailing waiting time for the marquee to start over.
 
+### speed
+
+Type: Number Default: `50`
+
+Changes how fast text moves.
+
 ## Scripts
 
 ```
